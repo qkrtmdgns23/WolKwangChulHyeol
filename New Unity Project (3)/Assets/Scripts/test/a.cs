@@ -27,7 +27,7 @@ public class a : MonoBehaviour
 		{
 			Vector3 targetPosition = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
 			transform.LookAt(targetPosition);
-			animator.SetTrigger("_turn");
+			//animator.SetTrigger("_turn");
 		}
 	}
 
