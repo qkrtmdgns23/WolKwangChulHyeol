@@ -54,7 +54,6 @@ public class ItemManager : MonoBehaviour, I_Item
         {
             stats.GetType().GetField(statsname).SetValue(stats, temp+(int)itemR);
             Debug.Log(stats.GetType().GetField(statsname).GetValue(stats));
-            //stats.holy_gauge += (int)itemR;
         }
         else
         {
