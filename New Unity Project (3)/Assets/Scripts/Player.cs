@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CoreStats;
 
 public class Player : MonoBehaviour
 {
@@ -16,8 +17,23 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private Camera theCamera;
+
+    private CoreStats.Stats playerStats ;
     private Rigidbody myRigid;
 
+    private void Awake()
+    {
+        playerStats = this.GetComponent<CoreStats.Stats>();
+        playerStats.hp = 100;
+        playerStats.mp = 100;
+        playerStats.sp= 100;
+        playerStats.holy_gauge = 0;
+        playerStats.flame_gauge = 0;
+        playerStats.electric_gauge = 0;
+        playerStats.holy_gauge = 0;
+        playerStats.poison_gauge = 0;
+        playerStats.armor = 10;
+    }
     void Start()
     {
         myRigid = GetComponent<Rigidbody>();  // private

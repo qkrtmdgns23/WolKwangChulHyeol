@@ -1,15 +1,54 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using UnityEngine.AI;
-//public class SwordMonster : SwordMonsterFSM
-//{
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+public class SwordMonster : SwordMonsterFSM
+{
+    MonsterBase monsterBase ;
+    
+    private void Awake()
+    {
+       
+        monsterBase = this.GetComponent <MonsterBase>();
+        monsterAnimator = this.GetComponent<Animator>();
+        nvAgent = this.GetComponent<NavMeshAgent>();
+
+    }
+    void Start()
+    {
+        monsterBase.Start();
+        distance = Vector3.Distance(player.transform.position, transform.position);
+
+        stats.hp = 100;
+        stats.movespeed = 10;
+
+        _isDeath = true;
+        StartCoroutine(FSM());
+
+    }
+
+    private void Update()
+    {
+        AnyState();
+        distance = Vector3.Distance(player.transform.position, transform.position);
+       
+    }
+    private void OnTriggerStay(Collider _collider)
+    {
+
+        if (_collider == playerAttack)
+        {
+            //stats.hp -= 10;
+        }
+    }
+
+}
 //    public GameObject enemyCanvasGo;
 //    public GameObject meleeAtkArea;
 
 //    void Start()
 //    {
-       
+
 //        base.Start();
 //        attackCoolTime = 2f;
 //        attackCoolTimeCacl = attackCoolTime;
@@ -18,7 +57,7 @@
 //        nvAgent.stoppingDistance = 1f;
 //    }
 //    //    StartCoroutine(ResetAtkArea());
-    
+
 
 //    //IEnumerator ResetAtkArea()
 //    //{

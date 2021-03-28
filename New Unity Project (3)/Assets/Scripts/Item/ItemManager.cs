@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using CoreStats;
 public class ItemManager : MonoBehaviour, I_Item
 {
     [SerializeField]
     private string statsname;
 
-    private PlayerStats stats;
+    private CoreStats.Stats stats;
     private string myname;
     public enum ItemRecovery
     {
@@ -36,11 +36,10 @@ public class ItemManager : MonoBehaviour, I_Item
     private ItemMax itemM;
     private void Awake()
     {
-        
         myname = this.name;
         itemR = (ItemRecovery)Enum.Parse(typeof(ItemRecovery), myname);// 해당 포션 이름으로 Enum에서 회복량 찾기.
         itemM = (ItemMax)Enum.Parse(typeof(ItemMax), myname);// 해당 포션 이름으로 Enum에서 최대 회복량 찾기.
-        stats = GameObject.Find("Player").GetComponent<PlayerStats>();
+        stats = GameObject.Find("Player").GetComponent<CoreStats.Stats>();
     }
 
     public void Use()
