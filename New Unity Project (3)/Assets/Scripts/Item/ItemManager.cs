@@ -32,13 +32,13 @@ public class ItemManager : MonoBehaviour, I_Item
         SpPortion=100,
         PoisonBarrel=50
     }
-    private ItemRecovery itemR;
-    private ItemMax itemM;
+    private ItemRecovery itemRecovery;
+    private ItemMax itemMax;
     private void Awake()
     {
         myname = this.name;
-        itemR = (ItemRecovery)Enum.Parse(typeof(ItemRecovery), myname);// 해당 포션 이름으로 Enum에서 회복량 찾기.
-        itemM = (ItemMax)Enum.Parse(typeof(ItemMax), myname);// 해당 포션 이름으로 Enum에서 최대 회복량 찾기.
+        itemRecovery = (ItemRecovery)Enum.Parse(typeof(ItemRecovery), myname);// 해당 포션 이름으로 Enum에서 회복량 찾기.
+        itemMax = (ItemMax)Enum.Parse(typeof(ItemMax), myname);// 해당 포션 이름으로 Enum에서 최대 회복량 찾기.
         stats = GameObject.Find("Player").GetComponent<CoreStats.Stats>();
     }
 
@@ -46,17 +46,17 @@ public class ItemManager : MonoBehaviour, I_Item
     {
         Portion();
     }
-    private void Portion() //
+    private void Portion() //포션의 회복 스크립트
     {
         int temp = (int)stats.GetType().GetField(statsname).GetValue(stats);
-        if ((int)itemM > temp + (int)itemR)
+        if ((int)itemMax > temp + (int)itemRecovery)
         {
-            stats.GetType().GetField(statsname).SetValue(stats, temp+(int)itemR);
+            stats.GetType().GetField(statsname).SetValue(stats, temp+(int)itemRecovery);
             Debug.Log(stats.GetType().GetField(statsname).GetValue(stats));
         }
         else
         {
-            stats.GetType().GetField(statsname).SetValue(stats, (int)itemM);
+            stats.GetType().GetField(statsname).SetValue(stats, (int)itemMax);
         }
     }
 }
