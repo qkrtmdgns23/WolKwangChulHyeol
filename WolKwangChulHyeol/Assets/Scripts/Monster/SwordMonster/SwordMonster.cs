@@ -12,6 +12,9 @@ public class SwordMonster : SwordMonsterFSM
         monsterBase = this.GetComponent <MonsterBase>();
         monsterAnimator = this.GetComponent<Animator>();
         nvAgent = this.GetComponent<NavMeshAgent>();
+        rigid = this.GetComponent<Rigidbody>();
+
+
 
     }
     void Start()
@@ -19,28 +22,47 @@ public class SwordMonster : SwordMonsterFSM
         monsterBase.Start();
         distance = Vector3.Distance(player.transform.position, transform.position);
 
-        stats.hp = 100;
+        stats.hp = 20;
         stats.movespeed = 10;
 
+        attackRange = 1.25f;
         _isDeath = true;
+
+
         StartCoroutine(FSM());
 
     }
 
     private void Update()
     {
+
         AnyState();
+        
         distance = Vector3.Distance(player.transform.position, transform.position);
-       
+        direction = (player.transform.position - this.transform.position).normalized;
+
+
     }
     private void OnTriggerStay(Collider _collider)
     {
-
-        if (_collider == playerAttack)
+        if (_isDeath)
         {
-            //stats.hp -= 10;
+            if (Input.GetKeyDown(KeyCode.E))//플레이어 어택 참조 예정
+            {
+                Debug.Log("앙");
+
+                if (_collider == playerAttack)
+                {
+                    if (!_isknockback)
+                    {
+                        _isknockback = true;
+                    }
+                }
+            }
+
         }
     }
+    
 
 }
 //    public GameObject enemyCanvasGo;

@@ -11,39 +11,47 @@ public class MonsterBase : MonoBehaviour
     protected GameObject player;
     protected Animator monsterAnimator;
     protected Collider playerAttack;
-    protected NavMeshAgent nvAgent ;
+    protected NavMeshAgent nvAgent;
+    protected Rigidbody rigid;
     public LayerMask layerMask;
 
+    protected Vector3 direction;
     protected bool _isDeath = true;
+    protected bool _isknockback = false;
     protected bool canAtk = false;
     protected float distance;
     protected float playerRealizeRange = 10f;
-    protected float attackRange = 3f;
+    protected float attackRange = 2f;
     protected float moveSpeed = 2.0f;
+    protected WaitForSeconds Delay3000 = new WaitForSeconds(3f);
     public void Start()
     {
         player = GameObject.Find("Player");
         stats = this.GetComponent<CoreStats.Stats>();
         playerAttack = player.transform.Find("attack").GetComponent<BoxCollider>();
         monsterAnimator = this.GetComponent<Animator>();
-      
+
     }
     protected bool CanAtkState()
     {
-       
+
         Vector3 targetDir = new Vector3(player.transform.position.x - transform.position.x, 0f, player.transform.position.z - transform.position.z);
 
         Physics.Raycast(new Vector3(transform.position.x, 0.5f, transform.position.z), targetDir, out RaycastHit hit, 30f, layerMask);
-        
-        Debug.DrawRay(new Vector3(transform.position.x, 0.5f, transform.position.z), targetDir,Color.red, 10);
+
         if (hit.transform == null)
         {
             return false;
         }
         if (hit.transform.CompareTag("Player") && distance <= attackRange)
         {
-            canAtk = true;
-            return true;
+            if (!_isknockback)
+            {
+                canAtk = true;
+                return true;
+            }
+            canAtk = false;
+            return false;
         }
         else
         {
@@ -54,6 +62,7 @@ public class MonsterBase : MonoBehaviour
     {
 
     }
+
     protected void AnyState()
     {
         if (stats.hp < 0 && _isDeath)
@@ -61,13 +70,23 @@ public class MonsterBase : MonoBehaviour
             _isDeath = false;
             Death();
         }
-        LookPlayer();
+        if (_isDeath)
+        {
+            LookPlayer();
+        }
+    }
+    protected void MonsterPushback()
+    {
+
     }
     private void Death()
     {
         monsterAnimator.SetTrigger("Death");
-
-        Destroy(gameObject, 5);
+        //monsterAnimator.SetBool("IsDeath", true);
+        nvAgent.isStopped = true;
+        nvAgent.speed = 0;
+        //nvAgent.SetDestination(this.transform.position);
+        Destroy(gameObject, 7);
     }
     private void LookPlayer()
     {
@@ -81,6 +100,7 @@ public class MonsterBase : MonoBehaviour
     }
 
 }
+
 
 //    public float maxHp = 1000f;
 //    public float currentHp = 1000f;

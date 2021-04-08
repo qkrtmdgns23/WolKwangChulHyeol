@@ -8,64 +8,98 @@ public class SwordMonsterFSM : MonsterBase
     {
         Idle,
         Move,
-        Attack
+        Attack,
+        OnHit
     };
-    
-    private State currentState = State.Idle;
-    private WaitForSeconds Delay500 = new WaitForSeconds(0.5f);
+
+    protected State currentState = State.Idle;
+
+    protected WaitForSeconds Delay500 = new WaitForSeconds(0.5f);
     protected virtual IEnumerator FSM()
     {
         yield return null;
+
         
+
         while (true)
         {
-            yield return StartCoroutine(currentState.ToString());
+            if (!_isDeath)
+            {
+                nvAgent.isStopped = true;
+                nvAgent.speed = 0;
+                break;
+            }
+            if (distance > playerRealizeRange)
+            {
+                StartCoroutine(Idle());
+                nvAgent.SetDestination(this.transform.position);
+                yield return Delay500;
+            }
+            else
+            {
+                yield return StartCoroutine(currentState.ToString());
+            }
         }
     }
     protected virtual IEnumerator Idle()
     {
         yield return null;
-        if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Idle"))
+        if (!_isknockback)
         {
-            monsterAnimator.SetTrigger("Idle");
-        }
-        if(CanAtkState())
-        {
-            if (canAtk)
+            if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Idle"))
             {
-                currentState = State.Attack;
+                monsterAnimator.SetTrigger("Idle");
+            }
+
+            if (CanAtkState())
+            {
+                if (canAtk)
+                {
+                    currentState = State.Attack;
+                }
+                else
+                {
+                    currentState = State.Idle;
+                }
             }
             else
             {
-                currentState = State.Idle;
-                transform.LookAt(player.transform.position);
+                currentState = State.Move;
             }
         }
         else
         {
-            currentState = State.Move;
+            currentState = State.OnHit;
         }
+        
     }
     protected virtual IEnumerator Move()
     {
         yield return null;
         //Move
-        if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Walk"))
+        if (!_isknockback)
         {
-            monsterAnimator.SetTrigger("Walk");
-        }
+            if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Walk"))
+            {
+                monsterAnimator.SetTrigger("Walk");
+            }
 
-        if (CanAtkState())
-        {
-            currentState = State.Attack;
-        }
-        else if (distance > playerRealizeRange)
-        {
-            nvAgent.SetDestination(this.transform.position);
+            if (CanAtkState())
+            {
+                currentState = State.Attack;
+            }
+            else if (distance > playerRealizeRange)
+            {
+                currentState = State.Idle;
+            }
+            else if (monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Walk"))
+            {
+                nvAgent.SetDestination(player.transform.position);
+            }
         }
         else
         {
-            nvAgent.SetDestination(player.transform.position);
+            currentState = State.OnHit;
         }
     }
 
@@ -73,27 +107,65 @@ public class SwordMonsterFSM : MonsterBase
     {
         yield return null;
         //Atk
-
-        //nvAgent.stoppingDistance = 0f;
-        //nvAgent.isStopped = true;
-        //nvAgent.SetDestination(player.transform.position);
-        //yield return Delay500;
-
-        //nvAgent.isStopped = false;
-        //nvAgent.speed = 30f;
-        //canAtk = false;
-
-        if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword And Shield Attack"))
+        if (!_isknockback)
         {
-            monsterAnimator.SetTrigger("Attack");
-        }
-        yield return Delay500;
 
+            nvAgent.isStopped = true;
+            nvAgent.SetDestination(this.transform.position);
+            yield return Delay500;
+
+
+            monsterAnimator.SetTrigger("Attack");
+            yield return Delay500;
+
+            if (CanAtkState())
+            {
+                currentState = State.Attack;
+            }
+            else
+            {
+
+                currentState = State.Idle;
+            }
+        }
+        else
+        {
+            currentState = State.OnHit;
+        }
+    }
+
+    protected IEnumerator OnHit()
+    {
+        yield return null;
+
+        int playerdamage = 10; //수정 필요
+      
+      
+       
+        
+        if (!monsterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sword1h_Hit_Head_Front"))
+        {
+            stats.hp -= playerdamage;
+            if (0 <=stats.hp)
+            { 
+                Debug.Log(stats.hp);
+                nvAgent.isStopped = true;
+                rigid.AddForce(-direction * playerdamage*10, ForceMode.VelocityChange);
+                monsterAnimator.SetBool("Knockback", true);
+                monsterAnimator.SetTrigger("MonsterPushback");
+            }
+        }
+
+        yield return Delay3000;
+        Debug.Log("쑥");
+        monsterAnimator.SetBool("Knockback", false);
+        _isknockback = false;
         nvAgent.speed = moveSpeed;
         nvAgent.stoppingDistance = attackRange;
         currentState = State.Idle;
-    }
+        nvAgent.isStopped = false;
 
+    }
 
 }
 
@@ -162,7 +234,7 @@ public class SwordMonsterFSM : MonsterBase
 
 //        nvAgent.stoppingDistance = 0f;
 //        nvAgent.isStopped = true;
-//        nvAgent.SetDestination(player.transform.position);
+//        
 //        yield return Delay500;
 
 //        nvAgent.isStopped = false;
