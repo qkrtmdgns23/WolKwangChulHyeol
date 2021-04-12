@@ -1,4 +1,5 @@
 using UnityEngine;
+using WolKwangChulHyeol.Core;
 
 namespace WolKwangChulHyeol.Movement
 {
@@ -6,11 +7,14 @@ namespace WolKwangChulHyeol.Movement
     {
         [SerializeField] float movementSpeed = 2.0f;
         [SerializeField] float runSpeed = 3.0f;
+        [SerializeField] float runStamina = 0.1f;
 
         private CharacterController characterController;
+        private Stamina stamina;
 
         private void Start() {
             characterController = GetComponent<CharacterController>();
+            stamina = GetComponent<Stamina>();
         }
 
         // Param x = Horizontal Axis
@@ -28,6 +32,7 @@ namespace WolKwangChulHyeol.Movement
         {
             Vector3 move = transform.right * x + transform.forward * z;
             characterController.Move(move * runSpeed * Time.deltaTime);
+            stamina.TakeStamina(runStamina);
             UpdateAnimator(move, 0.75f);
         }
 
