@@ -5,6 +5,7 @@ namespace WolKwangChulHyeol.Movement
     public class Moving : MonoBehaviour
     {
         [SerializeField] float movementSpeed = 2.0f;
+        [SerializeField] float runSpeed = 3.0f;
 
         private CharacterController characterController;
 
@@ -13,19 +14,26 @@ namespace WolKwangChulHyeol.Movement
         }
 
         // Param x = Horizontal Axis
-        // Param y = Vertical Axis
-        public void Move(float x, float y)
+        // Param z = Vertical Axis
+        public void Move(float x, float z)
         {
-            // Move  
-            Vector3 move = transform.right * x + transform.forward * y;
+            Vector3 move = transform.right * x + transform.forward * z;
             characterController.Move(move * movementSpeed * Time.deltaTime);
-            
-            UpdateAnimator(move);
+            UpdateAnimator(move, 0.5f);
         }
 
-        private void UpdateAnimator(Vector3 move)
+        // Param x = Horizontal Axis
+        // Param z = Vertical Axis
+        public void Run(float x, float z)
         {
-            float localSpeed = Mathf.Clamp(move.magnitude, -0.5f, 0.5f);
+            Vector3 move = transform.right * x + transform.forward * z;
+            characterController.Move(move * runSpeed * Time.deltaTime);
+            UpdateAnimator(move, 0.75f);
+        }
+
+        private void UpdateAnimator(Vector3 move, float threshold)
+        {
+            float localSpeed = Mathf.Clamp(move.magnitude, -threshold, threshold);
             GetComponent<Animator>().SetFloat("speed", localSpeed);
         }
 

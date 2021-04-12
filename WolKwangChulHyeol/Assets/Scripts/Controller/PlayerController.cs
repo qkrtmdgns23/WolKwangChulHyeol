@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using WolKwangChulHyeol.Movement;
 
 namespace WolKwangChulHyeol.Controller
@@ -14,15 +15,22 @@ namespace WolKwangChulHyeol.Controller
             InteractWithRotation();
         }
         
-        void InteractWithMovement()
+        private void InteractWithMovement()
         {
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
-            
-            GetComponent<Moving>().Move(horizontal, vertical);       
+
+            if (Input.GetKey(KeyCode.LeftShift) == false)
+            {
+                GetComponent<Moving>().Move(horizontal, vertical);
+            }
+            else
+            {
+                GetComponent<Moving>().Run(horizontal, vertical);
+            }
         }
 
-        void InteractWithRotation()
+        private void InteractWithRotation()
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
