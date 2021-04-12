@@ -19,6 +19,7 @@ namespace WolKwangChulHyeol.Controller
 
         private void Update()
         {
+            if(GetComponent<Health>().IsDead() == true) return;            
             InteractWithMovement();
             InteractWithRotation();
 
