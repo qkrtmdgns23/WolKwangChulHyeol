@@ -8,6 +8,7 @@ namespace WolKwangChulHyeol.Controller
     {
         private Moving moving;
         private Stamina stamina;
+        private Rolling rolling;
 
         private float gaspTime = Mathf.Infinity;
 
@@ -15,11 +16,13 @@ namespace WolKwangChulHyeol.Controller
             Cursor.lockState = CursorLockMode.Locked;
             moving = GetComponent<Moving>();
             stamina = GetComponent<Stamina>();
+            rolling = GetComponent<Rolling>();
         }
 
         private void Update()
         {
-            if(GetComponent<Health>().IsDead() == true) return;            
+            if(GetComponent<Health>().IsDead() == true) return;  
+            if(InteractWithRolling()) return;          
             InteractWithMovement();
             InteractWithRotation();
 
@@ -56,6 +59,16 @@ namespace WolKwangChulHyeol.Controller
             float mouseY = Input.GetAxis("Mouse Y");
 
             GetComponent<Rotation>().Rotate(mouseX, mouseY);
+        }
+
+        private bool InteractWithRolling()
+        {
+            if(Input.GetKeyDown(KeyCode.LeftControl) == true && stamina.GetStamina() > rolling.GetRollStamina())
+            {
+                rolling.Roll();
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace WolKwangChulHyeol.Movement
 {
     public class Moving : MonoBehaviour, IAction
     {
-        [SerializeField] float movementSpeed = 2.0f;
-        [SerializeField] float runSpeed = 3.0f;
+        [SerializeField] float movementSpeed = 3.0f;
+        [SerializeField] float runSpeed = 4.5f;
         [SerializeField] float runStamina = 0.1f;
 
         private CharacterController characterController;
