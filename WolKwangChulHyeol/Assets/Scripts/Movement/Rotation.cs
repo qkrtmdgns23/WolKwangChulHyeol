@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using WolKwangChulHyeol.Core;
 
 namespace WolKwangChulHyeol.Movement
 {
-    public class Rotation : MonoBehaviour
+    public class Rotation : MonoBehaviour, IAction
     {
         [SerializeField] float mouseSensitivity = 90.0f;
 
@@ -17,6 +18,12 @@ namespace WolKwangChulHyeol.Movement
 
             xRotation -= mouseY;
             transform.Rotate(Vector3.up * mouseX);
+        }
+
+        // IAction Interface 구현
+        public void Cancel()
+        {
+            
         }
     }
 }

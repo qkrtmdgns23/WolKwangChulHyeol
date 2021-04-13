@@ -3,7 +3,7 @@ using WolKwangChulHyeol.Core;
 
 namespace WolKwangChulHyeol.Movement
 {
-    public class Moving : MonoBehaviour
+    public class Moving : MonoBehaviour, IAction
     {
         [SerializeField] float movementSpeed = 2.0f;
         [SerializeField] float runSpeed = 3.0f;
@@ -40,6 +40,12 @@ namespace WolKwangChulHyeol.Movement
         {
             float localSpeed = Mathf.Clamp(move.magnitude, -threshold, threshold);
             GetComponent<Animator>().SetFloat("speed", localSpeed);
+        }
+
+        // IAction Interface 구현
+        public void Cancel()
+        {
+            characterController.Move(Vector3.zero);
         }
 
         // Animator Trigger Value
