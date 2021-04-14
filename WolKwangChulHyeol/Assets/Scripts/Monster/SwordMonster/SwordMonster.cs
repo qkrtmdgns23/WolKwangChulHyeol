@@ -15,7 +15,6 @@ public class SwordMonster : SwordMonsterFSM
         rigid = this.GetComponent<Rigidbody>();
 
 
-
     }
     void Start()
     {
@@ -24,10 +23,15 @@ public class SwordMonster : SwordMonsterFSM
 
         stats.hp = 20;
         stats.movespeed = 10;
+        attackRange = 2.25f;
+        nvAgent.speed = moveSpeed;
+        nvAgent.stoppingDistance = attackRange;
 
-        attackRange = 1.25f;
-        _isDeath = true;
-
+        _isDeath = false;
+        _isMonsterReady = false;
+        _isBlock = false;
+        playerdamage = 10; // 변경 예정
+        attackPercentage = 50;
 
         StartCoroutine(FSM());
 
@@ -35,27 +39,35 @@ public class SwordMonster : SwordMonsterFSM
 
     private void Update()
     {
-
-        AnyState();
+        if (_isMonsterReady)
+        {
+            AnyState();
+        }
         
         distance = Vector3.Distance(player.transform.position, transform.position);
         direction = (player.transform.position - this.transform.position).normalized;
-
+        randomAttack = Random.Range(0, 101);
 
     }
     private void OnTriggerStay(Collider _collider)
     {
-        if (_isDeath)
+        if (!_isDeath)
         {
             if (Input.GetKeyDown(KeyCode.E))//플레이어 어택 참조 예정
             {
-                Debug.Log("앙");
 
-                if (_collider == playerAttack)
+                Debug.Log("bbbb");
+                if (!_isBlock)
                 {
-                    if (!_isknockback)
+                    if (_collider == playerAttack)
                     {
-                        _isknockback = true;
+                        _isMonsterReady = true;
+                        //수정 필요
+                        stats.hp -= playerdamage;
+                        if (!_isknockback)
+                        {
+                            _isknockback = true;
+                        }
                     }
                 }
             }

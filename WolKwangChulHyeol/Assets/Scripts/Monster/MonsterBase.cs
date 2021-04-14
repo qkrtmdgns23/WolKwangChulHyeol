@@ -13,16 +13,21 @@ public class MonsterBase : MonoBehaviour
     protected Collider playerAttack;
     protected NavMeshAgent nvAgent;
     protected Rigidbody rigid;
+  
     public LayerMask layerMask;
-
+    public WayPoint wayPoint;
     protected Vector3 direction;
-    protected bool _isDeath = true;
+    protected bool _isDeath = false;
     protected bool _isknockback = false;
     protected bool canAtk = false;
+    protected bool _isBlock = false;
     protected float distance;
     protected float playerRealizeRange = 10f;
-    protected float attackRange = 2f;
+    protected float attackRange = 2.3f;
     protected float moveSpeed = 2.0f;
+    protected int playerdamage = 10;
+    protected int randomAttack = 0;
+    protected bool _isMonsterReady;
     protected WaitForSeconds Delay3000 = new WaitForSeconds(3f);
     public void Start()
     {
@@ -65,12 +70,12 @@ public class MonsterBase : MonoBehaviour
 
     protected void AnyState()
     {
-        if (stats.hp < 0 && _isDeath)
+        if (stats.hp < 0 && !_isDeath)
         {
-            _isDeath = false;
+            _isDeath = true;
             Death();
         }
-        if (_isDeath)
+        if (!_isDeath)
         {
             LookPlayer();
         }
@@ -93,51 +98,11 @@ public class MonsterBase : MonoBehaviour
 
         if (player != null)
         {
-            Vector3 targetPosition = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
-            transform.LookAt(targetPosition);
+           // Vector3 targetPosition = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
+            //transform.LookAt(targetPosition);
+            this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5);
             //animator.SetTrigger("_turn");
         }
     }
 
 }
-
-
-//    public float maxHp = 1000f;
-//    public float currentHp = 1000f;
-
-//    public float damage = 100f;
-
-//   
-//    
-//    protected float attackCoolTime = 5f;
-//    protected float attackCoolTimeCacl = 5f;
-//    protected bool discoveryPlayer = false;
-
-//    protected float moveSpeed = 2f;
-
-//    protected GameObject player;
-
-//    protected GameObject parentRoom;
-
-//    protected Animator animator;
-//    protected Rigidbody monsterRigid;
-
-
-//    // Use this for initialization
-//    protected void Start()
-//    {
-//        player = GameObject.FindGameObjectWithTag("Player");
-//        nvAgent = GetComponent<NavMeshAgent>();
-
-//        monsterRigid = GetComponent<Rigidbody>();
-//        animator = GetComponent<Animator>();
-//        SearchPlayer();
-//    }
-//    protected bool SearchPlayer()
-//    {
-
-//        return true;
-//    }
-
-
-//}
